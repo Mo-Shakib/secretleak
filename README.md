@@ -1,4 +1,4 @@
-# secret-scanner
+# secretleak
 
 A production-quality CLI tool to detect leaked secrets (API keys, tokens, private keys) in Git repositories.
 
@@ -17,28 +17,28 @@ A production-quality CLI tool to detect leaked secrets (API keys, tokens, privat
 ### From PyPI
 
 ```bash
-pip install secret-scanner
+pip install secretleak
 ```
 
 ### From source (development)
 
 ```bash
-git clone https://github.com/your-org/secret-scanner.git
-cd secret-scanner
+git clone https://github.com/your-org/secretleak.git
+cd secretleak
 pip install -e ".[dev]"
 ```
 
 ---
 
-## Using secret-scanner in Another Project
+## Using secretleak in Another Project
 
 ### Option 1 — Install globally and scan manually
 
 Install once, then point it at any repo:
 
 ```bash
-pip install secret-scanner
-secret-scanner scan /path/to/your-project
+pip install secretleak
+secretleak scan /path/to/your-project
 ```
 
 ### Option 2 — Add as a dev dependency
@@ -48,7 +48,7 @@ In your project's `pyproject.toml`:
 ```toml
 [project.optional-dependencies]
 dev = [
-    "secret-scanner",
+    "secretleak",
 ]
 ```
 
@@ -56,14 +56,14 @@ Then install and scan:
 
 ```bash
 pip install -e ".[dev]"
-secret-scanner scan .
+secretleak scan .
 ```
 
 Or reference a local checkout before it is published to PyPI:
 
 ```toml
 dev = [
-    "secret-scanner @ file:///path/to/secret-scanner",
+    "secretleak @ file:///path/to/secretleak",
 ]
 ```
 
@@ -73,22 +73,22 @@ Run once inside the target repo. Every developer on the team is protected automa
 
 ```bash
 cd /path/to/your-project
-secret-scanner install-hook .
+secretleak install-hook .
 ```
 
 From that point on, every `git commit` scans the staged files and blocks if secrets are found:
 
 ```
-[secret-scanner] Scanning staged files for secrets...
+[secretleak] Scanning staged files for secrets...
 🔴 CRITICAL  AWS Access Key ID — config.py:12 — AKIA****MPLE
 
-[secret-scanner] !! Commit BLOCKED: secrets detected in staged files.
+[secretleak] !! Commit BLOCKED: secrets detected in staged files.
 ```
 
 Remove the hook at any time:
 
 ```bash
-secret-scanner uninstall-hook .
+secretleak uninstall-hook .
 ```
 
 ### Option 4 — GitHub Actions (CI/CD)
@@ -110,8 +110,8 @@ jobs:
 
       - name: Scan for secrets
         run: |
-          pip install secret-scanner
-          secret-scanner scan . --format sarif --output results.sarif --no-fail
+          pip install secretleak
+          secretleak scan . --format sarif --output results.sarif --no-fail
 
       - name: Upload to GitHub Code Scanning
         uses: github/codeql-action/upload-sarif@v3
@@ -127,12 +127,12 @@ Findings appear in your repo's **Security → Code Scanning** tab with file loca
 cd /path/to/your-project
 
 # 1. Generate a baseline to silence already-known findings
-secret-scanner generate-baseline .
-git add .secret-scanner-baseline.json
-git commit -m "chore: add secret-scanner baseline"
+secretleak generate-baseline .
+git add .secretleak-baseline.json
+git commit -m "chore: add secretleak baseline"
 
 # 2. Add project-specific config
-cat > .secret-scanner.yaml << 'EOF'
+cat > .secretleak.yaml << 'EOF'
 allowlist:
   patterns:
     - '^EXAMPLE_'        # placeholder values in docs
@@ -140,7 +140,7 @@ allowlist:
   paths:
     - tests/fixtures/**  # test data with fake secrets
     - docs/**
-baseline_file: .secret-scanner-baseline.json
+baseline_file: .secretleak-baseline.json
 EOF
 ```
 
@@ -152,14 +152,14 @@ Future scans will skip anything in the baseline and anything matching the allowl
 
 | Goal | Command |
 |------|---------|
-| Scan a project | `secret-scanner scan /path/to/project` |
-| Scan staged files only | `secret-scanner scan --staged` |
-| Scan a commit range | `secret-scanner scan --commit-range HEAD~10..HEAD` |
-| Block commits automatically | `secret-scanner install-hook .` (run once) |
-| CI pipeline (SARIF) | `secret-scanner scan . --format sarif --no-fail` |
-| JSON report | `secret-scanner scan . --format json -o report.json` |
-| Suppress known findings | `secret-scanner generate-baseline .` |
-| List active rules | `secret-scanner rules` |
+| Scan a project | `secretleak scan /path/to/project` |
+| Scan staged files only | `secretleak scan --staged` |
+| Scan a commit range | `secretleak scan --commit-range HEAD~10..HEAD` |
+| Block commits automatically | `secretleak install-hook .` (run once) |
+| CI pipeline (SARIF) | `secretleak scan . --format sarif --no-fail` |
+| JSON report | `secretleak scan . --format json -o report.json` |
+| Suppress known findings | `secretleak generate-baseline .` |
+| List active rules | `secretleak rules` |
 
 ---
 
@@ -167,33 +167,33 @@ Future scans will skip anything in the baseline and anything matching the allowl
 
 ```bash
 # Scan current directory
-secret-scanner scan .
+secretleak scan .
 
 # Scan only staged files (before committing)
-secret-scanner scan --staged
+secretleak scan --staged
 
 # Scan a commit range
-secret-scanner scan --commit-range HEAD~10..HEAD
+secretleak scan --commit-range HEAD~10..HEAD
 
 # JSON output
-secret-scanner scan . --format json --output report.json
+secretleak scan . --format json --output report.json
 
 # SARIF output (GitHub Code Scanning)
-secret-scanner scan . --format sarif --output results.sarif
+secretleak scan . --format sarif --output results.sarif
 
 # Install pre-commit hook
-secret-scanner install-hook .
+secretleak install-hook .
 
 # Generate baseline to suppress existing findings
-secret-scanner generate-baseline .
+secretleak generate-baseline .
 
 # List active rules
-secret-scanner rules
+secretleak rules
 ```
 
 ## Configuration
 
-Create `.secret-scanner.yaml` in your repo root:
+Create `.secretleak.yaml` in your repo root:
 
 ```yaml
 # Override entropy settings
@@ -225,7 +225,7 @@ ignore_paths:
   - node_modules/**
 
 # Point at a baseline file
-baseline_file: .secret-scanner-baseline.json
+baseline_file: .secretleak-baseline.json
 ```
 
 ## False Positive Handling
@@ -244,9 +244,9 @@ allowlist:
 Generate a baseline from the current state of your repo, commit it, and future scans will ignore already-known findings:
 
 ```bash
-secret-scanner generate-baseline .
-git add .secret-scanner-baseline.json
-git commit -m "chore: add secret-scanner baseline"
+secretleak generate-baseline .
+git add .secretleak-baseline.json
+git commit -m "chore: add secretleak baseline"
 ```
 
 ### Ignore paths
@@ -264,8 +264,8 @@ ignore_paths:
 # .github/workflows/secret-scan.yml
 - name: Scan for secrets
   run: |
-    pip install secret-scanner
-    secret-scanner scan . --format sarif --output results.sarif --no-fail
+    pip install secretleak
+    secretleak scan . --format sarif --output results.sarif --no-fail
 
 - name: Upload SARIF
   uses: github/codeql-action/upload-sarif@v3
@@ -277,16 +277,16 @@ ignore_paths:
 
 ```bash
 # Install
-secret-scanner install-hook .
+secretleak install-hook .
 
 # Force-overwrite an existing hook
-secret-scanner install-hook . --force
+secretleak install-hook . --force
 
 # Uninstall
-secret-scanner uninstall-hook .
+secretleak uninstall-hook .
 ```
 
-The hook runs `secret-scanner scan --staged` and blocks the commit if any secrets are found.
+The hook runs `secretleak scan --staged` and blocks the commit if any secrets are found.
 
 ## Output Formats
 
@@ -338,7 +338,7 @@ pip install -e ".[dev]"
 pytest
 
 # Run tests with coverage
-pytest --cov=secret_scanner --cov-report=term-missing
+pytest --cov=secretleak --cov-report=term-missing
 
 # Lint
 ruff check src/ tests/

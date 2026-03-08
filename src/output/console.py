@@ -42,7 +42,7 @@ class ConsoleOutput:
         self._console.print(
             Panel(
                 Text("No secrets found.", style="bold green"),
-                title=f"[bold]secret-scanner[/bold] — {result.scan_mode.value}",
+                title=f"[bold]secretleak[/bold] — {result.scan_mode.value}",
                 border_style="green",
             )
         )
@@ -56,7 +56,7 @@ class ConsoleOutput:
         count = len(result.findings)
         crit = result.critical_count
         high = result.high_count
-        title = f"[bold red]secret-scanner — {count} finding(s) detected![/bold red]"
+        title = f"[bold red]secretleak — {count} finding(s) detected![/bold red]"
         body = (
             f"  [red]Critical: {crit}[/red]  "
             f"[yellow]High: {high}[/yellow]  "

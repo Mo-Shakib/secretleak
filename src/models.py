@@ -1,4 +1,4 @@
-"""Core data models for secret-scanner findings."""
+"""Core data models for secretleak findings."""
 
 from __future__ import annotations
 

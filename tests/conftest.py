@@ -4,8 +4,8 @@ from __future__ import annotations
 
 import pytest
 
-from secret_scanner.config import EntropyConfig, RegexRule, ScanConfig
-from secret_scanner.models import Finding, MatchType, ScanMode, Severity
+from secretleak.config import EntropyConfig, RegexRule, ScanConfig
+from secretleak.models import Finding, MatchType, ScanMode, Severity
 
 
 @pytest.fixture()

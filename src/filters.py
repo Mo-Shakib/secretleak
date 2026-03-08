@@ -92,7 +92,7 @@ def save_baseline(findings: list[Finding], baseline_path: Path) -> None:
     fingerprints = sorted({f.fingerprint for f in findings})
     data = {
         "version": 1,
-        "description": "secret-scanner baseline – commit to suppress known findings",
+        "description": "secretleak baseline – commit to suppress known findings",
         "fingerprints": fingerprints,
     }
     baseline_path.write_text(json.dumps(data, indent=2) + "\n")

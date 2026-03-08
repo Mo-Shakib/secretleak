@@ -44,9 +44,9 @@ class SarifOutput:
                 {
                     "tool": {
                         "driver": {
-                            "name": "secret-scanner",
+                            "name": "secretleak",
                             "version": __version__,
-                            "informationUri": "https://github.com/example/secret-scanner",
+                            "informationUri": "https://github.com/example/secretleak",
                             "rules": rules,
                         }
                     },
@@ -69,8 +69,7 @@ class SarifOutput:
                     "name": f.rule_name,
                     "shortDescription": {"text": f.rule_name},
                     "fullDescription": {
-                        "text": f"Detected by secret-scanner rule '{f.rule_id}' "
-                        f"({f.match_type.value})"
+                        "text": f"Detected by secretleak rule '{f.rule_id}' ({f.match_type.value})"
                     },
                     "defaultConfiguration": {
                         "level": _SEVERITY_TO_SARIF_LEVEL.get(f.severity, "warning")
@@ -112,7 +111,7 @@ class SarifOutput:
                     }
                 }
             ],
-            "fingerprints": {"secret-scanner/v1": f.fingerprint},
+            "fingerprints": {"secretleak/v1": f.fingerprint},
             "properties": {
                 "severity": f.severity.value,
                 "matchType": f.match_type.value,

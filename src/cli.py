@@ -1,4 +1,4 @@
-"""CLI entry point for secret-scanner using Typer."""
+"""CLI entry point for secretleak using Typer."""
 
 from __future__ import annotations
 
@@ -21,7 +21,7 @@ from .output.sarif import SarifOutput
 from .scanner import Scanner
 
 app = typer.Typer(
-    name="secret-scanner",
+    name="secretleak",
     help="Scan Git repositories for leaked secrets, API keys, and tokens.",
     add_completion=False,
     no_args_is_help=True,
@@ -39,7 +39,7 @@ class OutputFormat(StrEnum):
 
 def _version_callback(value: bool) -> None:
     if value:
-        typer.echo(f"secret-scanner {__version__}")
+        typer.echo(f"secretleak {__version__}")
         raise typer.Exit()
 
 
@@ -66,7 +66,7 @@ def scan(
     ] = None,
     config: Annotated[
         Path | None,
-        typer.Option("--config", "-c", help="Path to a .secret-scanner.yaml config file."),
+        typer.Option("--config", "-c", help="Path to a .secretleak.yaml config file."),
     ] = None,
     output_format: Annotated[
         OutputFormat,
@@ -98,9 +98,9 @@ def scan(
     # Auto-detect config file
     if config is None:
         for candidate in [
-            target / ".secret-scanner.yaml",
-            target / ".secret-scanner.yml",
-            Path.cwd() / ".secret-scanner.yaml",
+            target / ".secretleak.yaml",
+            target / ".secretleak.yml",
+            Path.cwd() / ".secretleak.yaml",
         ]:
             if candidate.exists():
                 config = candidate
@@ -166,13 +166,13 @@ def uninstall_hook(
         typer.Argument(help="Git repository root. Defaults to current directory."),
     ] = Path(),
 ) -> None:
-    """Remove the secret-scanner pre-commit hook."""
+    """Remove the secretleak pre-commit hook."""
     target = target.resolve()
     removed = uninstall_pre_commit_hook(target)
     if removed:
         console.print("[green]✓[/green] Pre-commit hook removed.")
     else:
-        console.print("[dim]No secret-scanner hook found; nothing to remove.[/dim]")
+        console.print("[dim]No secretleak hook found; nothing to remove.[/dim]")
 
 
 @app.command(name="generate-baseline")
@@ -183,12 +183,12 @@ def generate_baseline(
     ] = Path(),
     config: Annotated[
         Path | None,
-        typer.Option("--config", "-c", help="Path to a .secret-scanner.yaml config file."),
+        typer.Option("--config", "-c", help="Path to a .secretleak.yaml config file."),
     ] = None,
     baseline_file: Annotated[
         Path,
         typer.Option("--baseline", "-b", help="Output baseline file path."),
-    ] = Path(".secret-scanner-baseline.json"),
+    ] = Path(".secretleak-baseline.json"),
 ) -> None:
     """Scan the working tree and write a baseline to suppress existing findings."""
     target = target.resolve()
@@ -213,7 +213,7 @@ def generate_baseline(
 def list_rules(
     config: Annotated[
         Path | None,
-        typer.Option("--config", "-c", help="Path to a .secret-scanner.yaml config file."),
+        typer.Option("--config", "-c", help="Path to a .secretleak.yaml config file."),
     ] = None,
 ) -> None:
     """List all active detection rules."""

@@ -4,9 +4,9 @@ from __future__ import annotations
 
 from pathlib import Path
 
-from secret_scanner.config import AllowlistConfig, EntropyConfig, RegexRule, ScanConfig
-from secret_scanner.models import ScanMode, Severity
-from secret_scanner.scanner import Scanner
+from secretleak.config import AllowlistConfig, EntropyConfig, RegexRule, ScanConfig
+from secretleak.models import ScanMode, Severity
+from secretleak.scanner import Scanner
 
 
 def _scanner_with_rules(*patterns: tuple[str, str, str]) -> Scanner:
@@ -22,8 +22,8 @@ class TestScanWorkingTree:
 
         scanner = _scanner_with_rules(("aws", r"AKIA[A-Z0-9]{16}", "critical"))
         # We can't use iter_working_tree without git, so test via scanner internals
-        from secret_scanner.git_utils import ScannableLine
-        from secret_scanner.models import ScanMode
+        from secretleak.git_utils import ScannableLine
+        from secretleak.models import ScanMode
 
         lines = [
             ScannableLine(
@@ -37,7 +37,7 @@ class TestScanWorkingTree:
         assert result.findings[0].severity == Severity.CRITICAL
 
     def test_secret_is_masked_in_finding(self, tmp_path: Path) -> None:
-        from secret_scanner.git_utils import ScannableLine
+        from secretleak.git_utils import ScannableLine
 
         scanner = _scanner_with_rules(("aws", r"AKIA[A-Z0-9]{16}", "critical"))
         lines = [ScannableLine(file_path="cfg.py", line_number=1, content="AKIAIOSFODNN7EXAMPLE")]
@@ -50,7 +50,7 @@ class TestScanWorkingTree:
         assert finding.secret_masked.startswith("AKIA")
 
     def test_allowlist_suppresses_finding(self) -> None:
-        from secret_scanner.git_utils import ScannableLine
+        from secretleak.git_utils import ScannableLine
 
         config = ScanConfig(
             rules=[
@@ -67,7 +67,7 @@ class TestScanWorkingTree:
         assert result.suppressed_count == 1
 
     def test_ignored_path_skipped(self) -> None:
-        from secret_scanner.git_utils import ScannableLine
+        from secretleak.git_utils import ScannableLine
 
         config = ScanConfig(
             rules=[
@@ -89,7 +89,7 @@ class TestScanWorkingTree:
 
     def test_no_duplicate_findings_from_entropy_and_regex(self) -> None:
         """Entropy matches that overlap a regex match should be suppressed."""
-        from secret_scanner.git_utils import ScannableLine
+        from secretleak.git_utils import ScannableLine
 
         config = ScanConfig(
             rules=[
@@ -113,7 +113,7 @@ class TestScanWorkingTree:
             assert result.findings[0].rule_id == "aws"
 
     def test_stats_populated(self) -> None:
-        from secret_scanner.git_utils import ScannableLine
+        from secretleak.git_utils import ScannableLine
 
         scanner = _scanner_with_rules(("x", r"TOKEN", "low"))
         lines = [

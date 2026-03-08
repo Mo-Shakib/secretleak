@@ -35,7 +35,7 @@ Repository = "https://github.com/Mo-Shakib/secretleak"
 Issues = "https://github.com/Mo-Shakib/secretleak/issues"
 
 [project.scripts]
-secret-scanner = "secret_scanner.cli:app"
+secretleak = "secretleak.cli:app"
 
 [project.optional-dependencies]
 dev = [
@@ -46,15 +46,15 @@ dev = [
     "types-PyYAML>=6",
 ]
 
-# Map the 'secret_scanner' package to the flat src/ directory.
-# secret_scanner       → src/
-# secret_scanner.engines → src/engines/
-# secret_scanner.output  → src/output/
+# Map the 'secretleak' package to the flat src/ directory.
+# secretleak       → src/
+# secretleak.engines → src/engines/
+# secretleak.output  → src/output/
 [tool.setuptools]
-packages = ["secret_scanner", "secret_scanner.engines", "secret_scanner.output"]
+packages = ["secretleak", "secretleak.engines", "secretleak.output"]
 
 [tool.setuptools.package-dir]
-secret_scanner = "src"
+secretleak = "src"
 
 [tool.ruff]
 target-version = "py311"
@@ -65,7 +65,7 @@ select = ["E", "F", "I", "N", "UP", "B", "C4", "PTH"]
 ignore = ["B008"]  # typer uses function calls in defaults
 
 [tool.ruff.lint.isort]
-known-first-party = ["secret_scanner"]
+known-first-party = ["secretleak"]
 
 [tool.mypy]
 python_version = "3.11"
@@ -80,7 +80,7 @@ testpaths = ["tests"]
 addopts = "--tb=short -q"
 
 [tool.coverage.run]
-source = ["secret_scanner"]
+source = ["secretleak"]
 branch = true
 omit = ["*/tests/*"]
 

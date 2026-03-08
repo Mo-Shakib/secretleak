@@ -5,10 +5,10 @@ from __future__ import annotations
 import json
 from io import StringIO
 
-from secret_scanner.models import Finding, MatchType, ScanMode, ScanResult, Severity
-from secret_scanner.output.console import ConsoleOutput
-from secret_scanner.output.json_output import JsonOutput
-from secret_scanner.output.sarif import SarifOutput
+from secretleak.models import Finding, MatchType, ScanMode, ScanResult, Severity
+from secretleak.output.console import ConsoleOutput
+from secretleak.output.json_output import JsonOutput
+from secretleak.output.sarif import SarifOutput
 
 
 def _make_result(findings: list[Finding] | None = None) -> ScanResult:
@@ -128,7 +128,7 @@ class TestSarifOutput:
         SarifOutput().write(result, out)
         data = json.loads(out.getvalue())
         fps = data["runs"][0]["results"][0]["fingerprints"]
-        assert "secret-scanner/v1" in fps
+        assert "secretleak/v1" in fps
 
     def test_no_secret_in_sarif_message(self) -> None:
         raw_secret = "AKIAIOSFODNN7EXAMPLE"

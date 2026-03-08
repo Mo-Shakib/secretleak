@@ -7,7 +7,7 @@ from pathlib import Path
 
 from typer.testing import CliRunner
 
-from secret_scanner.cli import app
+from secretleak.cli import app
 
 runner = CliRunner()
 
@@ -62,12 +62,12 @@ class TestScanCommand:
     def test_version_flag(self) -> None:
         result = runner.invoke(app, ["scan", "--version"])
         assert result.exit_code == 0
-        assert "secret-scanner" in result.output
+        assert "secretleak" in result.output
 
     def test_scan_with_allowlist_config(self, tmp_path: Path) -> None:
         """Config file with allowlist should suppress the known fake key."""
         (tmp_path / "secrets.py").write_text('AWS_KEY = "AKIAIOSFODNN7EXAMPLE1"\n')
-        config_file = tmp_path / ".secret-scanner.yaml"
+        config_file = tmp_path / ".secretleak.yaml"
         config_file.write_text("allowlist:\n  patterns:\n    - AKIAIOSFODNN7EXAMPLE\n")
         result = runner.invoke(app, ["scan", str(tmp_path), "--config", str(config_file)])
         assert result.exit_code == 0
@@ -115,7 +115,7 @@ class TestGenerateBaselineCommand:
         assert bl.exists()
 
         # Create config pointing to the baseline
-        config_file = tmp_path / ".secret-scanner.yaml"
+        config_file = tmp_path / ".secretleak.yaml"
         config_file.write_text(f"baseline_file: {bl}\n")
 
         # Re-scan: findings should be suppressed
@@ -158,4 +158,4 @@ class TestInstallHookCommand:
         # With force: should succeed
         result2 = runner.invoke(app, ["install-hook", str(tmp_path), "--force"])
         assert result2.exit_code == 0
-        assert "secret-scanner pre-commit hook" in hook.read_text()
+        assert "secretleak pre-commit hook" in hook.read_text()

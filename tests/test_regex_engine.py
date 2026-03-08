@@ -2,9 +2,9 @@
 
 from __future__ import annotations
 
-from secret_scanner.config import RegexRule
-from secret_scanner.engines.regex_engine import RegexEngine
-from secret_scanner.models import MatchType, Severity
+from secretleak.config import RegexRule
+from secretleak.engines.regex_engine import RegexEngine
+from secretleak.models import MatchType, Severity
 
 
 def _make_engine(*patterns: tuple[str, str, str]) -> RegexEngine:

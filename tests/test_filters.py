@@ -5,9 +5,9 @@ from __future__ import annotations
 import json
 from pathlib import Path
 
-from secret_scanner.engines.base import LineMatch
-from secret_scanner.filters import FindingFilter, load_baseline, save_baseline
-from secret_scanner.models import Finding, MatchType, ScanMode, Severity
+from secretleak.engines.base import LineMatch
+from secretleak.filters import FindingFilter, load_baseline, save_baseline
+from secretleak.models import Finding, MatchType, ScanMode, Severity
 
 
 def _make_match(value: str = "secretvalue") -> LineMatch:

@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-from secret_scanner.redact import mask_secret, redact_line
+from secretleak.redact import mask_secret, redact_line
 
 
 class TestMaskSecret:
