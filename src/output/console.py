@@ -22,6 +22,7 @@ def _file_url(file_path: str, line: int | None = None) -> str:
         url += f"#{line}"
     return url
 
+
 _SEVERITY_STYLES: dict[Severity, str] = {
     Severity.CRITICAL: "bold red",
     Severity.HIGH: "red",
