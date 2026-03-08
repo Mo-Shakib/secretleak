@@ -5,8 +5,6 @@ from __future__ import annotations
 import json
 from io import StringIO
 
-import pytest
-
 from secret_scanner.models import Finding, MatchType, ScanMode, ScanResult, Severity
 from secret_scanner.output.console import ConsoleOutput
 from secret_scanner.output.json_output import JsonOutput

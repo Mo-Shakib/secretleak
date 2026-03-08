@@ -5,9 +5,9 @@ from __future__ import annotations
 import math
 import re
 
-from secret_scanner.config import EntropyConfig
-from secret_scanner.engines.base import BaseEngine, LineMatch
-from secret_scanner.models import MatchType, Severity
+from ..config import EntropyConfig
+from ..models import MatchType, Severity
+from .base import BaseEngine, LineMatch
 
 # Characters used in common secret encodings
 _BASE64_CHARS = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/="
@@ -25,10 +25,10 @@ def _shannon_entropy(s: str, charset: str) -> float:
     if not filtered:
         return 0.0
     length = len(filtered)
-    freq = {}
+    freq: dict[str, int] = {}
     for c in filtered:
         freq[c] = freq.get(c, 0) + 1
-    return -sum((count / length) * math.log2(count / length) for count in freq.values())
+    return float(-sum((count / length) * math.log2(count / length) for count in freq.values()))
 
 
 def _best_entropy(token: str) -> tuple[float, str]:

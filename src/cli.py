@@ -2,24 +2,23 @@
 
 from __future__ import annotations
 
-import sys
-from enum import Enum
+from enum import StrEnum
 from pathlib import Path
-from typing import Annotated, Optional
+from typing import Annotated
 
 import typer
 from rich.console import Console
 
-from secret_scanner import __version__
-from secret_scanner.config import load_config
-from secret_scanner.filters import save_baseline
-from secret_scanner.git_utils import GitError
-from secret_scanner.hooks import install_pre_commit_hook, uninstall_pre_commit_hook
-from secret_scanner.models import ScanResult
-from secret_scanner.output.console import ConsoleOutput
-from secret_scanner.output.json_output import JsonOutput
-from secret_scanner.output.sarif import SarifOutput
-from secret_scanner.scanner import Scanner
+from . import __version__
+from .config import load_config
+from .filters import save_baseline
+from .git_utils import GitError
+from .hooks import install_pre_commit_hook, uninstall_pre_commit_hook
+from .models import ScanResult
+from .output.console import ConsoleOutput
+from .output.json_output import JsonOutput
+from .output.sarif import SarifOutput
+from .scanner import Scanner
 
 app = typer.Typer(
     name="secret-scanner",
@@ -32,7 +31,7 @@ console = Console(stderr=True)
 err_console = Console(stderr=True)
 
 
-class OutputFormat(str, Enum):
+class OutputFormat(StrEnum):
     console = "console"
     json = "json"
     sarif = "sarif"
@@ -52,13 +51,13 @@ def scan(
             help="Directory or git repo to scan. Defaults to current directory.",
             show_default=True,
         ),
-    ] = Path("."),
+    ] = Path(),
     staged: Annotated[
         bool,
         typer.Option("--staged", help="Scan only staged (git diff --staged) changes."),
     ] = False,
     commit_range: Annotated[
-        Optional[str],
+        str | None,
         typer.Option(
             "--commit-range",
             metavar="FROM..TO",
@@ -66,7 +65,7 @@ def scan(
         ),
     ] = None,
     config: Annotated[
-        Optional[Path],
+        Path | None,
         typer.Option("--config", "-c", help="Path to a .secret-scanner.yaml config file."),
     ] = None,
     output_format: Annotated[
@@ -74,7 +73,7 @@ def scan(
         typer.Option("--format", "-f", help="Output format."),
     ] = OutputFormat.console,
     output_file: Annotated[
-        Optional[Path],
+        Path | None,
         typer.Option("--output", "-o", help="Write output to this file instead of stdout."),
     ] = None,
     no_color: Annotated[
@@ -86,7 +85,7 @@ def scan(
         typer.Option("--fail/--no-fail", help="Exit with code 1 when findings are detected."),
     ] = True,
     version: Annotated[
-        Optional[bool],
+        bool | None,
         typer.Option("--version", "-v", callback=_version_callback, is_eager=True),
     ] = None,
 ) -> None:
@@ -143,7 +142,7 @@ def install_hook(
     target: Annotated[
         Path,
         typer.Argument(help="Git repository root. Defaults to current directory."),
-    ] = Path("."),
+    ] = Path(),
     force: Annotated[
         bool,
         typer.Option("--force", "-f", help="Overwrite an existing pre-commit hook."),
@@ -167,7 +166,7 @@ def uninstall_hook(
     target: Annotated[
         Path,
         typer.Argument(help="Git repository root. Defaults to current directory."),
-    ] = Path("."),
+    ] = Path(),
 ) -> None:
     """Remove the secret-scanner pre-commit hook."""
     target = target.resolve()
@@ -183,9 +182,9 @@ def generate_baseline(
     target: Annotated[
         Path,
         typer.Argument(help="Directory or git repo to scan."),
-    ] = Path("."),
+    ] = Path(),
     config: Annotated[
-        Optional[Path],
+        Path | None,
         typer.Option("--config", "-c", help="Path to a .secret-scanner.yaml config file."),
     ] = None,
     baseline_file: Annotated[
@@ -215,13 +214,13 @@ def generate_baseline(
 @app.command(name="rules")
 def list_rules(
     config: Annotated[
-        Optional[Path],
+        Path | None,
         typer.Option("--config", "-c", help="Path to a .secret-scanner.yaml config file."),
     ] = None,
 ) -> None:
     """List all active detection rules."""
-    from rich.table import Table
     from rich import box
+    from rich.table import Table
 
     scan_config = load_config(config)
     table = Table(box=box.ROUNDED, title="Active Rules")
@@ -245,7 +244,7 @@ def list_rules(
 def _write_output(
     result: ScanResult,
     fmt: OutputFormat,
-    output_file: Optional[Path],
+    output_file: Path | None,
     no_color: bool,
 ) -> None:
     if fmt == OutputFormat.json:

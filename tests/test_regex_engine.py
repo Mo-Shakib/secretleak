@@ -2,8 +2,6 @@
 
 from __future__ import annotations
 
-import pytest
-
 from secret_scanner.config import RegexRule
 from secret_scanner.engines.regex_engine import RegexEngine
 from secret_scanner.models import MatchType, Severity

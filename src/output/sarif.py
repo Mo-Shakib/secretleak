@@ -7,8 +7,8 @@ import sys
 from pathlib import Path
 from typing import IO, Any
 
-from secret_scanner import __version__
-from secret_scanner.models import Finding, ScanResult, Severity
+from .. import __version__
+from ..models import Finding, ScanResult, Severity
 
 _SEVERITY_TO_SARIF_LEVEL: dict[Severity, str] = {
     Severity.CRITICAL: "error",

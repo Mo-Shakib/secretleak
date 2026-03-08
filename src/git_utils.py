@@ -3,9 +3,9 @@
 from __future__ import annotations
 
 import subprocess
+from collections.abc import Iterator
 from dataclasses import dataclass, field
 from pathlib import Path
-from typing import Iterator, Optional
 
 # Extensions we skip entirely (binary, compiled, lock files, etc.)
 _SKIP_EXTENSIONS = frozenset(
@@ -30,8 +30,8 @@ class ScannableLine:
     file_path: str
     line_number: int
     content: str
-    commit_hash: Optional[str] = None
-    author: Optional[str] = None
+    commit_hash: str | None = None
+    author: str | None = None
 
 
 @dataclass
@@ -148,7 +148,7 @@ def _build_author_map(repo_path: Path, from_ref: str, to_ref: str) -> dict[str, 
 
 def _parse_diff(diff_text: str) -> Iterator[ScannableLine]:
     """Parse a unified diff and yield only added lines with accurate line numbers."""
-    current_file: Optional[str] = None
+    current_file: str | None = None
     current_lineno = 0
 
     for raw_line in diff_text.splitlines():
@@ -190,7 +190,7 @@ def _parse_diff(diff_text: str) -> Iterator[ScannableLine]:
             current_lineno += 1
 
 
-def get_repo_root(path: Path) -> Optional[Path]:
+def get_repo_root(path: Path) -> Path | None:
     """Return the git repository root for the given path, or None."""
     try:
         root = _run_git(["rev-parse", "--show-toplevel"], path).strip()

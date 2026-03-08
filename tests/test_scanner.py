@@ -4,8 +4,6 @@ from __future__ import annotations
 
 from pathlib import Path
 
-import pytest
-
 from secret_scanner.config import AllowlistConfig, EntropyConfig, RegexRule, ScanConfig
 from secret_scanner.models import ScanMode, Severity
 from secret_scanner.scanner import Scanner
@@ -31,7 +29,9 @@ class TestScanWorkingTree:
         from secret_scanner.git_utils import ScannableLine
         from secret_scanner.models import ScanMode
 
-        lines = [ScannableLine(file_path="config.py", line_number=1, content='AWS_KEY = "AKIAIOSFODNN7EXAMPLE1"')]
+        lines = [
+            ScannableLine(file_path="config.py", line_number=1, content='AWS_KEY = "AKIAIOSFODNN7EXAMPLE1"')  # noqa: E501
+        ]
         result = scanner._build_result(lines, ScanMode.WORKING_TREE, str(tmp_path))
 
         assert result.has_findings
@@ -55,7 +55,7 @@ class TestScanWorkingTree:
         from secret_scanner.git_utils import ScannableLine
 
         config = ScanConfig(
-            rules=[RegexRule(id="aws", name="AWS", pattern=r"AKIA[A-Z0-9]{16}", severity="critical")],
+            rules=[RegexRule(id="aws", name="AWS", pattern=r"AKIA[A-Z0-9]{16}", severity="critical")],  # noqa: E501
             entropy=EntropyConfig(enabled=False),
             allowlist=AllowlistConfig(patterns=["^AKIAIOSFODNN7EXAMPLE$"]),
         )
@@ -70,7 +70,7 @@ class TestScanWorkingTree:
         from secret_scanner.git_utils import ScannableLine
 
         config = ScanConfig(
-            rules=[RegexRule(id="aws", name="AWS", pattern=r"AKIA[A-Z0-9]{16}", severity="critical")],
+            rules=[RegexRule(id="aws", name="AWS", pattern=r"AKIA[A-Z0-9]{16}", severity="critical")],  # noqa: E501
             entropy=EntropyConfig(enabled=False),
             ignore_paths=["tests/fixtures/*"],
         )

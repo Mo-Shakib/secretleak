@@ -4,9 +4,9 @@ from __future__ import annotations
 
 import re
 
-from secret_scanner.config import RegexRule
-from secret_scanner.engines.base import BaseEngine, LineMatch
-from secret_scanner.models import MatchType, Severity
+from ..config import RegexRule
+from ..models import MatchType, Severity
+from .base import BaseEngine, LineMatch
 
 
 class RegexEngine(BaseEngine):

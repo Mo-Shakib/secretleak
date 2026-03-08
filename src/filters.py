@@ -6,10 +6,9 @@ import fnmatch
 import json
 import re
 from pathlib import Path
-from typing import Optional
 
-from secret_scanner.engines.base import LineMatch
-from secret_scanner.models import Finding
+from .engines.base import LineMatch
+from .models import Finding
 
 
 class FindingFilter:
@@ -19,7 +18,7 @@ class FindingFilter:
         self,
         allowlist_patterns: list[str],
         ignore_path_globs: list[str],
-        baseline_fingerprints: Optional[set[str]] = None,
+        baseline_fingerprints: set[str] | None = None,
     ) -> None:
         self._allowlist_re: list[re.Pattern[str]] = []
         for p in allowlist_patterns:

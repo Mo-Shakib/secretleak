@@ -3,13 +3,13 @@
 from __future__ import annotations
 
 from pathlib import Path
-from typing import Optional
 
-from secret_scanner.config import ScanConfig, load_config
-from secret_scanner.engines.entropy_engine import EntropyEngine
-from secret_scanner.engines.regex_engine import RegexEngine
-from secret_scanner.filters import FindingFilter, load_baseline
-from secret_scanner.git_utils import (
+from .config import ScanConfig, load_config
+from .engines.base import LineMatch
+from .engines.entropy_engine import EntropyEngine
+from .engines.regex_engine import RegexEngine
+from .filters import FindingFilter, load_baseline
+from .git_utils import (
     GitError,
     ScannableLine,
     get_repo_root,
@@ -17,14 +17,14 @@ from secret_scanner.git_utils import (
     iter_staged_diff,
     iter_working_tree,
 )
-from secret_scanner.models import Finding, ScanMode, ScanResult
-from secret_scanner.redact import mask_secret, redact_line
+from .models import Finding, ScanMode, ScanResult
+from .redact import mask_secret, redact_line
 
 
 class Scanner:
     """Orchestrates all scanning modes."""
 
-    def __init__(self, config: Optional[ScanConfig] = None) -> None:
+    def __init__(self, config: ScanConfig | None = None) -> None:
         self._config = config or load_config()
         self._regex_engine = RegexEngine(self._config.rules)
         self._entropy_engine = EntropyEngine(self._config.entropy)
@@ -118,7 +118,7 @@ class Scanner:
             scanned_lines=len(lines),
         )
 
-    def _scan_line(self, line: str) -> list:  # type: ignore[type-arg]
+    def _scan_line(self, line: str) -> list[LineMatch]:
         """Run all enabled engines on a single line and deduplicate by span."""
         all_matches = self._regex_engine.scan_line(line)
         entropy_matches = self._entropy_engine.scan_line(line)

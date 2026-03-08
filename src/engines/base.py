@@ -5,7 +5,7 @@ from __future__ import annotations
 from abc import ABC, abstractmethod
 from dataclasses import dataclass
 
-from secret_scanner.models import MatchType, Severity
+from ..models import MatchType, Severity
 
 
 @dataclass

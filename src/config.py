@@ -4,7 +4,6 @@ from __future__ import annotations
 
 import re
 from pathlib import Path
-from typing import Optional
 
 import yaml
 from pydantic import BaseModel, Field, field_validator
@@ -69,13 +68,13 @@ class ScanConfig(BaseModel):
     # Additional paths/globs to ignore (on top of allowlist.paths)
     ignore_paths: list[str] = Field(default_factory=list)
     # Path to a JSON baseline file for suppressing known findings
-    baseline_file: Optional[str] = None
+    baseline_file: str | None = None
 
 
 _DEFAULT_RULES_PATH = Path(__file__).parent.parent / "rules" / "default_rules.yaml"
 
 
-def load_config(config_path: Optional[Path] = None) -> ScanConfig:
+def load_config(config_path: Path | None = None) -> ScanConfig:
     """Load scan config, merging user config over built-in defaults."""
     default_cfg = _load_yaml_config(_DEFAULT_RULES_PATH)
 

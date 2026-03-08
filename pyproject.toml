@@ -53,6 +53,8 @@ known-first-party = ["secret_scanner"]
 python_version = "3.11"
 strict = true
 ignore_missing_imports = true
+explicit_package_bases = true
+mypy_path = "."
 exclude = ["tests/"]
 
 [tool.pytest.ini_options]

@@ -2,8 +2,6 @@
 
 from __future__ import annotations
 
-import pytest
-
 from secret_scanner.redact import mask_secret, redact_line
 
 

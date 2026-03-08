@@ -5,8 +5,6 @@ from __future__ import annotations
 import json
 from pathlib import Path
 
-import pytest
-
 from secret_scanner.engines.base import LineMatch
 from secret_scanner.filters import FindingFilter, load_baseline, save_baseline
 from secret_scanner.models import Finding, MatchType, ScanMode, Severity

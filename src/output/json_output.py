@@ -4,12 +4,12 @@ from __future__ import annotations
 
 import json
 import sys
-from datetime import datetime, timezone
+from datetime import UTC, datetime
 from pathlib import Path
 from typing import IO, Any
 
-from secret_scanner import __version__
-from secret_scanner.models import ScanResult
+from .. import __version__
+from ..models import ScanResult
 
 
 class JsonOutput:
@@ -29,7 +29,7 @@ class JsonOutput:
     def _build_payload(self, result: ScanResult) -> dict[str, Any]:
         return {
             "version": __version__,
-            "generated_at": datetime.now(tz=timezone.utc).isoformat(),
+            "generated_at": datetime.now(tz=UTC).isoformat(),
             "scan_mode": result.scan_mode.value,
             "target": result.target,
             "summary": {

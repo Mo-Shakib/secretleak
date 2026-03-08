@@ -2,13 +2,12 @@
 
 from __future__ import annotations
 
-from enum import Enum
-from typing import Optional
+from enum import StrEnum
 
 from pydantic import BaseModel, Field, computed_field
 
 
-class Severity(str, Enum):
+class Severity(StrEnum):
     CRITICAL = "critical"
     HIGH = "high"
     MEDIUM = "medium"
@@ -23,13 +22,13 @@ SEVERITY_ORDER: dict[Severity, int] = {
 }
 
 
-class ScanMode(str, Enum):
+class ScanMode(StrEnum):
     WORKING_TREE = "working_tree"
     STAGED = "staged"
     COMMIT_RANGE = "commit_range"
 
 
-class MatchType(str, Enum):
+class MatchType(StrEnum):
     REGEX = "regex"
     ENTROPY = "entropy"
 
@@ -50,10 +49,10 @@ class Finding(BaseModel):
     # Surrounding line content with the secret masked out
     line_preview: str
     scan_mode: ScanMode
-    commit_hash: Optional[str] = None
-    author: Optional[str] = None
+    commit_hash: str | None = None
+    author: str | None = None
 
-    @computed_field  # type: ignore[misc]
+    @computed_field  # type: ignore[prop-decorator]
     @property
     def fingerprint(self) -> str:
         """Stable identifier for suppression/baseline purposes."""

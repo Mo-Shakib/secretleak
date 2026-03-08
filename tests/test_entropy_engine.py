@@ -5,7 +5,7 @@ from __future__ import annotations
 import pytest
 
 from secret_scanner.config import EntropyConfig
-from secret_scanner.engines.entropy_engine import EntropyEngine, _shannon_entropy, _BASE64_CHARS
+from secret_scanner.engines.entropy_engine import _BASE64_CHARS, EntropyEngine, _shannon_entropy
 from secret_scanner.models import MatchType
 
 
