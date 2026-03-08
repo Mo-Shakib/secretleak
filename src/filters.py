@@ -37,7 +37,12 @@ class FindingFilter:
             # 1. Direct fnmatch on the full path (handles simple globs)
             if fnmatch.fnmatch(file_path, glob):
                 return True
-            # 2. For ** patterns, also check the tail portion against path/filename
+            # 2. Leading **/ requires ≥1 char before the segment in fnmatch,
+            #    so also try without it to catch root-level paths.
+            if glob.startswith("**/"):
+                if fnmatch.fnmatch(file_path, glob[3:]):
+                    return True
+            # 3. For ** patterns, also check the tail portion against path/filename
             if "**" in glob:
                 tail = glob.rsplit("**", 1)[-1].lstrip("/")
                 if tail:

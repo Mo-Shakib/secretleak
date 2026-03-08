@@ -2,6 +2,9 @@
 
 from __future__ import annotations
 
+from pathlib import Path
+from urllib.parse import quote
+
 from rich import box
 from rich.console import Console
 from rich.panel import Panel
@@ -9,6 +12,15 @@ from rich.table import Table
 from rich.text import Text
 
 from ..models import Finding, ScanResult, Severity
+
+
+def _file_url(file_path: str, line: int | None = None) -> str:
+    """Return a file:// URL for the given path, resolved to absolute."""
+    abs_path = Path(file_path).resolve()
+    url = "file://" + quote(str(abs_path), safe="/:")
+    if line is not None:
+        url += f"#{line}"
+    return url
 
 _SEVERITY_STYLES: dict[Severity, str] = {
     Severity.CRITICAL: "bold red",
@@ -83,10 +95,11 @@ class ConsoleOutput:
         for f in sorted_findings:
             style = _SEVERITY_STYLES.get(f.severity, "")
             icon = _SEVERITY_ICONS.get(f.severity, "")
+            file_text = Text(f.file_path, style=f"link {_file_url(f.file_path, f.line_number)}")
             table.add_row(
                 Text(f"{icon} {f.severity.value.upper()}", style=style),
                 f.rule_name,
-                f.file_path,
+                file_text,
                 str(f.line_number),
                 Text(f.secret_masked.replace("*", "•"), style="bold magenta"),
                 Text(f.line_preview.strip()[:80], style="dim"),
@@ -105,9 +118,17 @@ class ConsoleOutput:
         """Print a single finding (used in hook mode for incremental output)."""
         style = _SEVERITY_STYLES.get(finding.severity, "")
         icon = _SEVERITY_ICONS.get(finding.severity, "")
+        url = _file_url(finding.file_path, finding.line_number)
+        path_text = Text(f"{finding.file_path}:{finding.line_number}", style=f"link {url}")
         self._console.print(
-            f"{icon} [{style}]{finding.severity.value.upper()}[/{style}] "
-            f"[bold]{finding.rule_name}[/bold] — "
-            f"{finding.file_path}:{finding.line_number} — "
-            f"[magenta]{finding.secret_masked}[/magenta]"
+            Text.assemble(
+                f"{icon} ",
+                Text(finding.severity.value.upper(), style=style),
+                " ",
+                Text(finding.rule_name, style="bold"),
+                " — ",
+                path_text,
+                " — ",
+                Text(finding.secret_masked, style="magenta"),
+            )
         )

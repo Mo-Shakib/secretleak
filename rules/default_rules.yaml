@@ -223,3 +223,24 @@ rules:
     severity: high
     description: Username and password embedded in a URL
     pattern: '(?i)https?://[^:@\s]+:[^@\s]{6,}@[^\s"''`]+'
+
+# Paths ignored by default (dependency dirs, build artifacts, test fixtures)
+ignore_paths:
+  - "**/node_modules/**"
+  - "**/vendor/**"
+  - "**/.venv/**"
+  - "**/venv/**"
+  - "**/.env/**"
+  - "**/site-packages/**"
+  - "**/dist/**"
+  - "**/build/**"
+  - "**/__pycache__/**"
+  - "**/.git/**"
+  - "**/coverage/**"
+  - "**/.nyc_output/**"
+  - "**/bower_components/**"
+  # Lock / integrity files — contain hashes that look high-entropy
+  - "**/package-lock.json"
+  - "**/pnpm-lock.yaml"
+  - "**/go.sum"
+  - "**/Cargo.lock"

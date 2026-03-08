@@ -40,3 +40,6 @@ Thumbs.db
 
 # secret-scanner baseline (optional – commit this if you want to suppress known findings)
 # .secret-scanner-baseline.json
+
+# Manual testing sandbox
+test-project/

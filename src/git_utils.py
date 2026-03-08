@@ -94,16 +94,32 @@ class GitError(RuntimeError):
     pass
 
 
-def iter_working_tree(repo_path: Path) -> Iterator[ScannableLine]:
-    """Yield scannable lines from every tracked (and untracked) text file."""
-    try:
-        tracked_raw = _run_git(
-            ["ls-files", "--cached", "--others", "--exclude-standard"], repo_path
-        )
-        tracked = [p.strip() for p in tracked_raw.splitlines() if p.strip()]
-    except GitError:
-        # Fallback: walk the directory
-        tracked = [str(p.relative_to(repo_path)) for p in repo_path.rglob("*") if p.is_file()]
+def iter_working_tree(repo_path: Path, subtree: Path | None = None) -> Iterator[ScannableLine]:
+    """Yield scannable lines from every tracked (and untracked) text file.
+
+    If *subtree* is given, only files under that directory are scanned.
+    Paths in the yielded lines are always relative to *repo_path*.
+
+    When *subtree* differs from *repo_path* the function walks the filesystem
+    directly so that gitignored directories (e.g. a manual test sandbox) are
+    still scanned when the user explicitly targets them.  The repo-root case
+    continues to use ``git ls-files`` so that git's own ignore rules are
+    respected.
+    """
+    scan_root = subtree if (subtree is not None and subtree != repo_path) else None
+
+    if scan_root is not None:
+        # Explicit subtree: bypass git so gitignored dirs are still scanned.
+        tracked = [str(p.relative_to(repo_path)) for p in scan_root.rglob("*") if p.is_file()]
+    else:
+        try:
+            tracked_raw = _run_git(
+                ["ls-files", "--cached", "--others", "--exclude-standard"], repo_path
+            )
+            tracked = [p.strip() for p in tracked_raw.splitlines() if p.strip()]
+        except GitError:
+            # Fallback: walk the directory
+            tracked = [str(p.relative_to(repo_path)) for p in repo_path.rglob("*") if p.is_file()]
 
     for rel_path in tracked:
         abs_path = repo_path / rel_path

@@ -45,7 +45,7 @@ class Scanner:
     def scan_working_tree(self, target: Path) -> ScanResult:
         """Scan all files in the working tree of `target`."""
         repo_root = get_repo_root(target) or target
-        lines = list(iter_working_tree(repo_root))
+        lines = list(iter_working_tree(repo_root, subtree=target))
         return self._build_result(lines, ScanMode.WORKING_TREE, str(target))
 
     def scan_staged(self, target: Path) -> ScanResult:
