@@ -1,0 +1,225 @@
+rules:
+  # ── AWS ──────────────────────────────────────────────────────────────────────
+  - id: aws-access-key-id
+    name: AWS Access Key ID
+    severity: critical
+    description: AWS access key identifier
+    pattern: '(?:A3T[A-Z0-9]|AKIA|AGPA|AIDA|AROA|AIPA|ANPA|ANVA|ASIA)[A-Z0-9]{16}'
+
+  - id: aws-secret-access-key
+    name: AWS Secret Access Key
+    severity: critical
+    description: AWS secret access key (typically follows AKIA key)
+    pattern: '(?i)aws[_\-\s]?secret[_\-\s]?(?:access[_\-\s]?)?key[\s]*[=:"\s]+([A-Za-z0-9/+]{40})'
+
+  # ── GitHub ────────────────────────────────────────────────────────────────────
+  - id: github-pat-classic
+    name: GitHub Personal Access Token (Classic)
+    severity: critical
+    description: GitHub classic personal access token
+    pattern: 'ghp_[A-Za-z0-9]{36}'
+
+  - id: github-pat-fine-grained
+    name: GitHub Fine-Grained PAT
+    severity: critical
+    description: GitHub fine-grained personal access token
+    pattern: 'github_pat_[A-Za-z0-9_]{82}'
+
+  - id: github-oauth-token
+    name: GitHub OAuth Token
+    severity: critical
+    description: GitHub OAuth access token
+    pattern: 'gho_[A-Za-z0-9]{36}'
+
+  - id: github-actions-token
+    name: GitHub Actions Token
+    severity: critical
+    description: GitHub Actions temporary token
+    pattern: 'ghs_[A-Za-z0-9]{36}'
+
+  - id: github-refresh-token
+    name: GitHub Refresh Token
+    severity: high
+    description: GitHub OAuth refresh token
+    pattern: 'ghr_[A-Za-z0-9]{36}'
+
+  # ── Stripe ────────────────────────────────────────────────────────────────────
+  - id: stripe-secret-key
+    name: Stripe Secret Key
+    severity: critical
+    description: Stripe live or test secret key
+    pattern: 'sk_(?:live|test)_[A-Za-z0-9]{24,}'
+
+  - id: stripe-publishable-key
+    name: Stripe Publishable Key
+    severity: medium
+    description: Stripe publishable key (lower risk but still sensitive)
+    pattern: 'pk_(?:live|test)_[A-Za-z0-9]{24,}'
+
+  - id: stripe-restricted-key
+    name: Stripe Restricted Key
+    severity: critical
+    description: Stripe restricted API key
+    pattern: 'rk_(?:live|test)_[A-Za-z0-9]{24,}'
+
+  # ── Google ────────────────────────────────────────────────────────────────────
+  - id: google-api-key
+    name: Google API Key
+    severity: high
+    description: Google API key
+    pattern: 'AIza[0-9A-Za-z\-_]{35}'
+
+  - id: google-oauth-client-secret
+    name: Google OAuth Client Secret
+    severity: high
+    description: Google OAuth 2.0 client secret
+    pattern: 'GOCSPX-[A-Za-z0-9\-_]{28}'
+
+  # ── Slack ─────────────────────────────────────────────────────────────────────
+  - id: slack-bot-token
+    name: Slack Bot Token
+    severity: critical
+    description: Slack bot user OAuth token
+    pattern: 'xoxb-[0-9]{10,13}-[0-9]{10,13}-[A-Za-z0-9]{24}'
+
+  - id: slack-user-token
+    name: Slack User Token
+    severity: critical
+    description: Slack user OAuth token
+    pattern: 'xoxp-[0-9]{10,13}-[0-9]{10,13}-[0-9]{10,13}-[A-Za-z0-9]{32}'
+
+  - id: slack-app-token
+    name: Slack App-Level Token
+    severity: high
+    description: Slack app-level token
+    pattern: 'xapp-[0-9]-[A-Z0-9]{10,13}-[0-9]{13}-[A-Za-z0-9]{64}'
+
+  - id: slack-webhook
+    name: Slack Incoming Webhook
+    severity: high
+    description: Slack incoming webhook URL
+    pattern: 'https://hooks\.slack\.com/services/T[A-Z0-9]+/B[A-Z0-9]+/[A-Za-z0-9]+'
+
+  # ── Twilio ────────────────────────────────────────────────────────────────────
+  - id: twilio-api-key
+    name: Twilio API Key
+    severity: high
+    description: Twilio API key
+    pattern: 'SK[0-9a-fA-F]{32}'
+
+  - id: twilio-account-sid
+    name: Twilio Account SID
+    severity: medium
+    description: Twilio account SID
+    pattern: 'AC[0-9a-fA-F]{32}'
+
+  # ── SendGrid ──────────────────────────────────────────────────────────────────
+  - id: sendgrid-api-key
+    name: SendGrid API Key
+    severity: high
+    description: SendGrid API key
+    pattern: 'SG\.[A-Za-z0-9\-_]{22}\.[A-Za-z0-9\-_]{43}'
+
+  # ── Mailgun ───────────────────────────────────────────────────────────────────
+  - id: mailgun-api-key
+    name: Mailgun API Key
+    severity: high
+    description: Mailgun private API key
+    pattern: 'key-[0-9a-zA-Z]{32}'
+
+  # ── npm ───────────────────────────────────────────────────────────────────────
+  - id: npm-access-token
+    name: npm Access Token
+    severity: high
+    description: npm registry access token
+    pattern: 'npm_[A-Za-z0-9]{36}'
+
+  # ── PyPI ──────────────────────────────────────────────────────────────────────
+  - id: pypi-upload-token
+    name: PyPI Upload Token
+    severity: high
+    description: PyPI package upload token
+    pattern: 'pypi-[A-Za-z0-9\-_]{72,}'
+
+  # ── Vault / HashiCorp ─────────────────────────────────────────────────────────
+  - id: hashicorp-vault-token
+    name: HashiCorp Vault Token
+    severity: critical
+    description: HashiCorp Vault service or batch token
+    pattern: '(?:hvs|hvb|hvr)\.[A-Za-z0-9]{24,}'
+
+  # ── JWT ───────────────────────────────────────────────────────────────────────
+  - id: jwt-token
+    name: JSON Web Token
+    severity: medium
+    description: JWT token (may carry sensitive claims)
+    pattern: 'eyJ[A-Za-z0-9\-_]+\.eyJ[A-Za-z0-9\-_]+\.[A-Za-z0-9\-_]+'
+
+  # ── PEM / Private Keys ────────────────────────────────────────────────────────
+  - id: private-key-rsa
+    name: RSA Private Key
+    severity: critical
+    description: RSA private key PEM block
+    pattern: '-----BEGIN RSA PRIVATE KEY-----'
+
+  - id: private-key-ec
+    name: EC Private Key
+    severity: critical
+    description: EC private key PEM block
+    pattern: '-----BEGIN EC PRIVATE KEY-----'
+
+  - id: private-key-openssh
+    name: OpenSSH Private Key
+    severity: critical
+    description: OpenSSH private key PEM block
+    pattern: '-----BEGIN OPENSSH PRIVATE KEY-----'
+
+  - id: private-key-generic
+    name: Generic Private Key
+    severity: critical
+    description: Generic private key PEM block
+    pattern: '-----BEGIN PRIVATE KEY-----'
+
+  # ── Database connection strings ───────────────────────────────────────────────
+  - id: postgres-connection-string
+    name: PostgreSQL Connection String
+    severity: high
+    description: PostgreSQL URL with embedded credentials
+    pattern: 'postgres(?:ql)?://[^:]+:[^@]+@[^\s"''`]+'
+
+  - id: mysql-connection-string
+    name: MySQL Connection String
+    severity: high
+    description: MySQL URL with embedded credentials
+    pattern: 'mysql://[^:]+:[^@]+@[^\s"''`]+'
+
+  - id: mongodb-connection-string
+    name: MongoDB Connection String
+    severity: high
+    description: MongoDB URL with embedded credentials
+    pattern: 'mongodb(?:\+srv)?://[^:]+:[^@]+@[^\s"''`]+'
+
+  - id: redis-connection-string
+    name: Redis Connection String with Auth
+    severity: high
+    description: Redis URL with password
+    pattern: 'redis://:[^@]+@[^\s"''`]+'
+
+  # ── Generic high-confidence patterns ─────────────────────────────────────────
+  - id: generic-secret-assignment
+    name: Generic Secret Assignment
+    severity: medium
+    description: Variable assignment that looks like a secret
+    pattern: '(?i)(?:secret|passwd|password|api[_-]?key|auth[_-]?token|access[_-]?token|private[_-]?key)\s*[=:]\s*["\x27]([A-Za-z0-9\-_./+]{16,})["\x27]'
+
+  - id: bearer-token
+    name: Bearer Token in Header
+    severity: medium
+    description: Bearer token used in HTTP Authorization header
+    pattern: '(?i)Authorization["\x27]?\s*:\s*["\x27]?Bearer\s+([A-Za-z0-9\-_./+]{20,})'
+
+  - id: basic-auth-url
+    name: Credentials in URL
+    severity: high
+    description: Username and password embedded in a URL
+    pattern: '(?i)https?://[^:@\s]+:[^@\s]{6,}@[^\s"''`]+'
