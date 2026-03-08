@@ -23,7 +23,7 @@ pip install secretleak
 ### From source (development)
 
 ```bash
-git clone https://github.com/your-org/secretleak.git
+git clone https://github.com/Mo-Shakib/secretleak.git
 cd secretleak
 pip install -e ".[dev]"
 ```
