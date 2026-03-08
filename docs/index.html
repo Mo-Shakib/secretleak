@@ -511,13 +511,17 @@
       /* Install strip full-width */
       .install-strip { display: flex; width: 100%; max-width: 100%; }
 
-      /* Terminal — horizontal scroll within box */
-      .terminal-wrapper { overflow: hidden; }
-      .terminal-body {
-        font-size: .72rem; padding: 14px 16px;
-        overflow-x: auto; min-height: 240px;
-        /* Allow inner scroll, keep border-radius clip on wrapper */
+      /* Terminal — wrapper scrolls horizontally, body keeps ASCII layout */
+      .terminal-wrapper {
+        overflow-x: auto;
+        overflow-y: hidden;
         -webkit-overflow-scrolling: touch;
+      }
+      .terminal-body {
+        min-width: 560px;   /* preserve ASCII art width */
+        min-height: auto;
+        font-size: .72rem;
+        padding: 14px 16px;
       }
 
       /* Steps — single column, hide horizontal line */
@@ -559,8 +563,8 @@
       /* Smaller section padding */
       section { padding: 48px 4%; }
 
-      /* Terminal even smaller font */
-      .terminal-body { font-size: .65rem; padding: 12px; }
+      /* Terminal even smaller font, tighten min-width */
+      .terminal-body { font-size: .65rem; padding: 12px; min-width: 480px; }
 
       /* CTA tighter */
       .cta-banner { padding: 32px 20px; margin: 0 2%; }
