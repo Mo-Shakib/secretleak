@@ -6,7 +6,6 @@ on:
 
 permissions:
   contents: read
-  id-token: write  # Required for Trusted Publisher (OIDC)
 
 jobs:
   build:
@@ -21,7 +20,7 @@ jobs:
           python-version: "3.11"
 
       - name: Install build tools
-        run: pip install build
+        run: python -m pip install --upgrade build
 
       - name: Build sdist and wheel
         run: python -m build
@@ -39,6 +38,9 @@ jobs:
     environment:
       name: pypi
       url: https://pypi.org/project/secretleak/
+    permissions:
+      id-token: write
+
     steps:
       - name: Download build artifacts
         uses: actions/download-artifact@v4
