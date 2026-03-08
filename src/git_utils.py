@@ -10,12 +10,45 @@ from pathlib import Path
 # Extensions we skip entirely (binary, compiled, lock files, etc.)
 _SKIP_EXTENSIONS = frozenset(
     {
-        ".png", ".jpg", ".jpeg", ".gif", ".bmp", ".ico", ".svg", ".webp",
-        ".pdf", ".zip", ".tar", ".gz", ".bz2", ".xz", ".7z", ".rar",
-        ".exe", ".dll", ".so", ".dylib", ".bin", ".obj", ".o", ".a",
-        ".class", ".pyc", ".pyo", ".pyd",
-        ".wasm", ".woff", ".woff2", ".ttf", ".otf", ".eot",
-        ".mp3", ".mp4", ".wav", ".avi", ".mov",
+        ".png",
+        ".jpg",
+        ".jpeg",
+        ".gif",
+        ".bmp",
+        ".ico",
+        ".svg",
+        ".webp",
+        ".pdf",
+        ".zip",
+        ".tar",
+        ".gz",
+        ".bz2",
+        ".xz",
+        ".7z",
+        ".rar",
+        ".exe",
+        ".dll",
+        ".so",
+        ".dylib",
+        ".bin",
+        ".obj",
+        ".o",
+        ".a",
+        ".class",
+        ".pyc",
+        ".pyo",
+        ".pyd",
+        ".wasm",
+        ".woff",
+        ".woff2",
+        ".ttf",
+        ".otf",
+        ".eot",
+        ".mp3",
+        ".mp4",
+        ".wav",
+        ".avi",
+        ".mov",
         ".lock",  # package-lock.json, poetry.lock – high false-positive noise
     }
 )
@@ -70,11 +103,7 @@ def iter_working_tree(repo_path: Path) -> Iterator[ScannableLine]:
         tracked = [p.strip() for p in tracked_raw.splitlines() if p.strip()]
     except GitError:
         # Fallback: walk the directory
-        tracked = [
-            str(p.relative_to(repo_path))
-            for p in repo_path.rglob("*")
-            if p.is_file()
-        ]
+        tracked = [str(p.relative_to(repo_path)) for p in repo_path.rglob("*") if p.is_file()]
 
     for rel_path in tracked:
         abs_path = repo_path / rel_path
@@ -108,9 +137,7 @@ def iter_staged_diff(repo_path: Path) -> Iterator[ScannableLine]:
 def iter_commit_range(repo_path: Path, from_ref: str, to_ref: str) -> Iterator[ScannableLine]:
     """Yield added lines between two refs (commit range)."""
     try:
-        diff_text = _run_git(
-            ["diff", "--unified=0", from_ref, to_ref], repo_path
-        )
+        diff_text = _run_git(["diff", "--unified=0", from_ref, to_ref], repo_path)
     except GitError:
         return
     # Collect commit authors for the range

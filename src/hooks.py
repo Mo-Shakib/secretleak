@@ -60,25 +60,18 @@ def install_pre_commit_hook(repo_path: Path, force: bool = False) -> Path:
     hooks_dir = repo_path / ".git" / "hooks"
     if not hooks_dir.is_dir():
         raise RuntimeError(
-            f"No .git/hooks directory found at '{hooks_dir}'. "
-            "Is this a git repository?"
+            f"No .git/hooks directory found at '{hooks_dir}'. Is this a git repository?"
         )
 
     hook_path = hooks_dir / "pre-commit"
 
     if hook_path.exists() and not force:
         raise FileExistsError(
-            f"A pre-commit hook already exists at '{hook_path}'. "
-            "Use --force to overwrite."
+            f"A pre-commit hook already exists at '{hook_path}'. Use --force to overwrite."
         )
 
     hook_path.write_text(_PRE_COMMIT_SCRIPT)
-    hook_path.chmod(
-        hook_path.stat().st_mode
-        | stat.S_IXUSR
-        | stat.S_IXGRP
-        | stat.S_IXOTH
-    )
+    hook_path.chmod(hook_path.stat().st_mode | stat.S_IXUSR | stat.S_IXGRP | stat.S_IXOTH)
     return hook_path
 
 

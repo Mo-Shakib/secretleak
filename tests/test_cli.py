@@ -19,16 +19,12 @@ class TestScanCommand:
         assert result.exit_code == 0
 
     def test_scan_with_secret_exits_1(self, tmp_path: Path) -> None:
-        (tmp_path / "secrets.py").write_text(
-            'AWS_KEY = "AKIAIOSFODNN7EXAMPLE1"\n'
-        )
+        (tmp_path / "secrets.py").write_text('AWS_KEY = "AKIAIOSFODNN7EXAMPLE1"\n')
         result = runner.invoke(app, ["scan", str(tmp_path)])
         assert result.exit_code == 1
 
     def test_scan_no_fail_flag(self, tmp_path: Path) -> None:
-        (tmp_path / "secrets.py").write_text(
-            'AWS_KEY = "AKIAIOSFODNN7EXAMPLE1"\n'
-        )
+        (tmp_path / "secrets.py").write_text('AWS_KEY = "AKIAIOSFODNN7EXAMPLE1"\n')
         result = runner.invoke(app, ["scan", str(tmp_path), "--no-fail"])
         assert result.exit_code == 0
 
@@ -70,29 +66,19 @@ class TestScanCommand:
 
     def test_scan_with_allowlist_config(self, tmp_path: Path) -> None:
         """Config file with allowlist should suppress the known fake key."""
-        (tmp_path / "secrets.py").write_text(
-            'AWS_KEY = "AKIAIOSFODNN7EXAMPLE1"\n'
-        )
+        (tmp_path / "secrets.py").write_text('AWS_KEY = "AKIAIOSFODNN7EXAMPLE1"\n')
         config_file = tmp_path / ".secret-scanner.yaml"
-        config_file.write_text(
-            "allowlist:\n  patterns:\n    - AKIAIOSFODNN7EXAMPLE\n"
-        )
-        result = runner.invoke(
-            app, ["scan", str(tmp_path), "--config", str(config_file)]
-        )
+        config_file.write_text("allowlist:\n  patterns:\n    - AKIAIOSFODNN7EXAMPLE\n")
+        result = runner.invoke(app, ["scan", str(tmp_path), "--config", str(config_file)])
         assert result.exit_code == 0
 
     def test_commit_range_requires_git(self, tmp_path: Path) -> None:
-        result = runner.invoke(
-            app, ["scan", str(tmp_path), "--commit-range", "HEAD~1..HEAD"]
-        )
+        result = runner.invoke(app, ["scan", str(tmp_path), "--commit-range", "HEAD~1..HEAD"])
         # Should fail with git error (not a repo), exit 2
         assert result.exit_code == 2
 
     def test_commit_range_invalid_format(self, tmp_path: Path) -> None:
-        result = runner.invoke(
-            app, ["scan", str(tmp_path), "--commit-range", "invalid"]
-        )
+        result = runner.invoke(app, ["scan", str(tmp_path), "--commit-range", "invalid"])
         assert result.exit_code == 2
 
 
@@ -112,9 +98,7 @@ class TestGenerateBaselineCommand:
     def test_generates_baseline_file(self, tmp_path: Path) -> None:
         (tmp_path / "clean.py").write_text("x = 1\n")
         bl = tmp_path / "baseline.json"
-        result = runner.invoke(
-            app, ["generate-baseline", str(tmp_path), "--baseline", str(bl)]
-        )
+        result = runner.invoke(app, ["generate-baseline", str(tmp_path), "--baseline", str(bl)])
         assert result.exit_code == 0
         assert bl.exists()
         data = json.loads(bl.read_text())
@@ -127,9 +111,7 @@ class TestGenerateBaselineCommand:
         bl = tmp_path / "baseline.json"
 
         # Generate baseline
-        runner.invoke(
-            app, ["generate-baseline", str(tmp_path), "--baseline", str(bl)]
-        )
+        runner.invoke(app, ["generate-baseline", str(tmp_path), "--baseline", str(bl)])
         assert bl.exists()
 
         # Create config pointing to the baseline
@@ -137,9 +119,7 @@ class TestGenerateBaselineCommand:
         config_file.write_text(f"baseline_file: {bl}\n")
 
         # Re-scan: findings should be suppressed
-        result = runner.invoke(
-            app, ["scan", str(tmp_path), "--config", str(config_file)]
-        )
+        result = runner.invoke(app, ["scan", str(tmp_path), "--config", str(config_file)])
         assert result.exit_code == 0
 
 

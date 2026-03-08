@@ -18,8 +18,7 @@ _SEVERITY_TO_SARIF_LEVEL: dict[Severity, str] = {
 }
 
 _SARIF_SCHEMA = (
-    "https://raw.githubusercontent.com/oasis-tcs/sarif-spec/master/"
-    "Schemata/sarif-schema-2.1.0.json"
+    "https://raw.githubusercontent.com/oasis-tcs/sarif-spec/master/Schemata/sarif-schema-2.1.0.json"
 )
 
 

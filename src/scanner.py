@@ -62,9 +62,7 @@ class Scanner:
         if repo_root is None:
             raise GitError(f"'{target}' is not inside a git repository")
         lines = list(iter_commit_range(repo_root, from_ref, to_ref))
-        return self._build_result(
-            lines, ScanMode.COMMIT_RANGE, f"{from_ref}..{to_ref}"
-        )
+        return self._build_result(lines, ScanMode.COMMIT_RANGE, f"{from_ref}..{to_ref}")
 
     # ── Internal helpers ────────────────────────────────────────────────────────
 
@@ -127,8 +125,7 @@ class Scanner:
         regex_spans = {(m.column_start, m.column_end) for m in all_matches}
         for em in entropy_matches:
             overlaps = any(
-                em.column_start < end and em.column_end > start
-                for start, end in regex_spans
+                em.column_start < end and em.column_end > start for start, end in regex_spans
             )
             if not overlaps:
                 all_matches.append(em)

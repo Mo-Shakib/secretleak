@@ -118,9 +118,7 @@ def scan(
         if commit_range:
             parts = commit_range.split("..", 1)
             if len(parts) != 2:
-                err_console.print(
-                    "[red]Error:[/red] --commit-range must be in FROM..TO format"
-                )
+                err_console.print("[red]Error:[/red] --commit-range must be in FROM..TO format")
                 raise typer.Exit(2)
             result = scanner.scan_commit_range(target, parts[0], parts[1])
         elif staged:

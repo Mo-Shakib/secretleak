@@ -10,9 +10,7 @@ from secret_scanner.scanner import Scanner
 
 
 def _scanner_with_rules(*patterns: tuple[str, str, str]) -> Scanner:
-    rules = [
-        RegexRule(id=p[0], name=p[0], pattern=p[1], severity=p[2]) for p in patterns
-    ]
+    rules = [RegexRule(id=p[0], name=p[0], pattern=p[1], severity=p[2]) for p in patterns]
     config = ScanConfig(rules=rules, entropy=EntropyConfig(enabled=False))
     return Scanner(config)
 
@@ -22,15 +20,15 @@ class TestScanWorkingTree:
         secret_file = tmp_path / "config.py"
         secret_file.write_text('AWS_KEY = "AKIAIOSFODNN7EXAMPLE1"\n')
 
-        scanner = _scanner_with_rules(
-            ("aws", r"AKIA[A-Z0-9]{16}", "critical")
-        )
+        scanner = _scanner_with_rules(("aws", r"AKIA[A-Z0-9]{16}", "critical"))
         # We can't use iter_working_tree without git, so test via scanner internals
         from secret_scanner.git_utils import ScannableLine
         from secret_scanner.models import ScanMode
 
         lines = [
-            ScannableLine(file_path="config.py", line_number=1, content='AWS_KEY = "AKIAIOSFODNN7EXAMPLE1"')  # noqa: E501
+            ScannableLine(
+                file_path="config.py", line_number=1, content='AWS_KEY = "AKIAIOSFODNN7EXAMPLE1"'
+            )  # noqa: E501
         ]
         result = scanner._build_result(lines, ScanMode.WORKING_TREE, str(tmp_path))
 
@@ -55,7 +53,9 @@ class TestScanWorkingTree:
         from secret_scanner.git_utils import ScannableLine
 
         config = ScanConfig(
-            rules=[RegexRule(id="aws", name="AWS", pattern=r"AKIA[A-Z0-9]{16}", severity="critical")],  # noqa: E501
+            rules=[
+                RegexRule(id="aws", name="AWS", pattern=r"AKIA[A-Z0-9]{16}", severity="critical")
+            ],  # noqa: E501
             entropy=EntropyConfig(enabled=False),
             allowlist=AllowlistConfig(patterns=["^AKIAIOSFODNN7EXAMPLE$"]),
         )
@@ -70,16 +70,20 @@ class TestScanWorkingTree:
         from secret_scanner.git_utils import ScannableLine
 
         config = ScanConfig(
-            rules=[RegexRule(id="aws", name="AWS", pattern=r"AKIA[A-Z0-9]{16}", severity="critical")],  # noqa: E501
+            rules=[
+                RegexRule(id="aws", name="AWS", pattern=r"AKIA[A-Z0-9]{16}", severity="critical")
+            ],  # noqa: E501
             entropy=EntropyConfig(enabled=False),
             ignore_paths=["tests/fixtures/*"],
         )
         scanner = Scanner(config)
-        lines = [ScannableLine(
-            file_path="tests/fixtures/fake.py",
-            line_number=1,
-            content="AKIAIOSFODNN7EXAMPLE",
-        )]
+        lines = [
+            ScannableLine(
+                file_path="tests/fixtures/fake.py",
+                line_number=1,
+                content="AKIAIOSFODNN7EXAMPLE",
+            )
+        ]
         result = scanner._build_result(lines, ScanMode.WORKING_TREE, ".")
         assert not result.has_findings
 

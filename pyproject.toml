@@ -3,18 +3,36 @@ requires = ["setuptools>=68"]
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "secret-scanner"
+name = "secretleak"
 version = "0.1.0"
 description = "A CLI tool to detect leaked secrets in Git repositories"
 readme = "README.md"
 license = { text = "MIT" }
 requires-python = ">=3.11"
+keywords = ["security", "secrets", "scanner", "git", "devops", "cli"]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Environment :: Console",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Topic :: Security",
+    "Topic :: Software Development :: Quality Assurance",
+]
 dependencies = [
     "typer[all]>=0.12",
     "rich>=13",
     "pydantic>=2",
     "pyyaml>=6",
 ]
+
+[project.urls]
+Homepage = "https://github.com/Mo-Shakib/secretleak"
+Repository = "https://github.com/Mo-Shakib/secretleak"
+Issues = "https://github.com/Mo-Shakib/secretleak/issues"
 
 [project.scripts]
 secret-scanner = "secret_scanner.cli:app"

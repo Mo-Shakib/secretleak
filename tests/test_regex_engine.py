@@ -9,10 +9,7 @@ from secret_scanner.models import MatchType, Severity
 
 def _make_engine(*patterns: tuple[str, str, str]) -> RegexEngine:
     """Helper: (id, pattern, severity) → RegexEngine."""
-    rules = [
-        RegexRule(id=p[0], name=p[0], pattern=p[1], severity=p[2])
-        for p in patterns
-    ]
+    rules = [RegexRule(id=p[0], name=p[0], pattern=p[1], severity=p[2]) for p in patterns]
     return RegexEngine(rules)
 
 
@@ -58,18 +55,14 @@ class TestRegexEngine:
         assert engine.scan_line("AKIAIOSFODNN7EXAMPLE1234") == []  # pattern doesn't match
 
     def test_github_pat_classic(self) -> None:
-        engine = _make_engine(
-            ("github-pat", r"ghp_[A-Za-z0-9]{36}", "critical")
-        )
+        engine = _make_engine(("github-pat", r"ghp_[A-Za-z0-9]{36}", "critical"))
         fake_token = "ghp_" + "A" * 36
         matches = engine.scan_line(f'token = "{fake_token}"')
         assert len(matches) == 1
         assert matches[0].raw_value == fake_token
 
     def test_stripe_secret_key(self) -> None:
-        engine = _make_engine(
-            ("stripe", r"sk_(?:live|test)_[A-Za-z0-9]{24,}", "critical")
-        )
+        engine = _make_engine(("stripe", r"sk_(?:live|test)_[A-Za-z0-9]{24,}", "critical"))
         # Constructed at runtime so the source file contains no credential literal
         fake_key = "sk_" + "test" + "_" + "A" * 24
         matches = engine.scan_line(f"STRIPE_SECRET={fake_key}")
